@@ -1,0 +1,115 @@
+Training with Supervised Learning
+
+
+# importing libraries
+from pathlib import Path
+import glob
+import pandas as pd
+
+# reading images from path
+images_dir = Path('img')
+images = images_dir.glob("*.tif")
+
+train_data = []
+
+counter = 0
+for img in images:
+  counter += 1
+  if counter <= 130:
+    train_data.append((img,1))
+  else:
+    train_data.append((img,0))
+ 
+# converting data into pandas dataframe for easy visualization 
+train_data = pd.DataFrame(train_data,columns=['image','label'],index = None)
+
+
+
+
+                                data augmentation
+                                
+                                
+                                
+import cv2
+img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+
+ // Gray Scaling
+The image will be converted to gray scale (range of gray shades from white to black) the computer will assign each pixel a value based on how dark it is. All the numbers are put into an array and the computer does computations on that array.
+
+import cv2
+img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+//Reflection/Flip
+You can flip images horizontally and vertically. Some frameworks do not provide function for vertical flips. But, a vertical flip is equivalent to rotating an image by 180 degrees and then performing a horizontal flip.
+
+# horizontal flip
+img = cv2.flip(img, 0) 
+
+# vertical flip
+img = cv2.flip(img,1)
+
+
+//Histogram Equalization
+Histogram equalization is another image processing technique to increase global contrast of an image using the image intensity histogram. This method needs no parameter, but it sometimes results in an unnatural looking image.
+
+# histogram equalization function
+def hist(img):
+  img_to_yuv = cv2.cvtColor(img,cv2.COLOR_BGR2YUV)
+  img_to_yuv[:,:,0] = cv2.equalizeHist(img_to_yuv[:,:,0])
+  hist_equalization_result = cv2.cvtColor(img_to_yuv, cv2.COLOR_YUV2BGR)
+  return hist_equalization_result
+
+//rotation
+import random
+# function for rotation
+def rotation(img):
+  rows,cols = img.shape[0],img.shape[1]
+  randDeg = random.randint(-180, 180)
+  matrix = cv2.getRotationMatrix2D((cols/2, rows/2), randDeg, 0.70)
+  rotated = cv2.warpAffine(img, matrix, (rows, cols), borderMode=cv2.BORDER_CONSTANT,borderValue=(144, 159, 162))
+  return rotated     
+
+ //svm
+ 
+ model = Sequential()
+model.add(Conv2D(16,(5,5),padding='valid',input_shape = X_train.shape[1:]))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2,2),strides=2,padding = 'valid'))
+model.add(Dropout(0.4))
+model.add(Conv2D(32,(5,5),padding='valid'))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2,2),strides=2,padding = 'valid'))
+model.add(Dropout(0.6))
+model.add(Conv2D(64,(5,5),padding='valid'))
+model.add(Activation('relu'))
+model.add(Dropout(0.8))
+model.add(Flatten())
+model.add(Dense(2))
+model.add(Activation('softmax'))
+
+model_feat = Model(inputs=model.input,outputs=model.get_layer('dense_1').output)
+feat_train = model_feat.predict(X_train)
+
+                //DECISION TREES
+    
+    model = Sequential()
+model.add(Conv2D(16,(5,5),padding='valid',input_shape = X_train.shape[1:]))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2,2),strides=2,padding = 'valid'))
+model.add(Dropout(0.4))
+model.add(Conv2D(32,(5,5),padding='valid'))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2,2),strides=2,padding = 'valid'))
+model.add(Dropout(0.6))
+model.add(Conv2D(64,(5,5),padding='valid'))
+model.add(Activation('relu'))
+model.add(Dropout(0.8))
+model.add(Flatten())
+model.add(Dense(2))
+model.add(Activation('softmax'))
+
+model_feat = Model(inputs=model.input,outputs=model.get_layer('dense_2').output)
+feat_train = model_feat.predict(X_train)
+
+
